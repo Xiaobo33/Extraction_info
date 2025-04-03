@@ -2,7 +2,7 @@ import json
 from sklearn.model_selection import train_test_split
 
 data = []
-with open("Books.jsonl", "r", encoding="utf-8") as file:
+with open("Books_échantillon.jsonl", "r", encoding="utf-8") as file:
     for line in file:
         review = json.loads(line)
         data.append(review)
@@ -19,6 +19,6 @@ def save_jsonl(filename, dataset):
 
 save_jsonl("Books_train.jsonl", train)
 save_jsonl("Books_dev.jsonl", dev)
-save_jsonl("Book_test.jsonl", test)
+save_jsonl("Books_test.jsonl", test)
 
-print(f"C'est fait ：train {len(train)}，dev : {len(dev)}，test {len(test)}")
+print(f"Mission complete ：train {len(train)}，dev : {len(dev)}，test {len(test)}")
