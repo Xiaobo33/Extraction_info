@@ -2,7 +2,7 @@ import json
 from sklearn.model_selection import train_test_split
 
 data = []
-with open("Books_échantillon.jsonl", "r", encoding="utf-8") as file:
+with open("Books_cleaned.jsonl", "r", encoding="utf-8") as file:
     for line in file:
         review = json.loads(line)
         data.append(review)
