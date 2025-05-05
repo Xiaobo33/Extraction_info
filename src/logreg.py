@@ -50,6 +50,24 @@ def entrainer_et_evaluer(train_file, dev_file, test_file, avec_neutre=True):
     print(classification_report(y_test_encoded, y_test_pred, target_names=le.classes_))
     print(confusion_matrix(y_test_encoded, y_test_pred))
 
+
+    # Enregistrement des résultats
+    resultats = f"=== training（avec_neutre={avec_neutre}）===\n\n"
+
+    resultats += "[DEV] Validation resultats:\n"
+    resultats += classification_report(y_dev_encoded, y_dev_pred, target_names=le.classes_)
+    resultats += "\n" + str(confusion_matrix(y_dev_encoded, y_dev_pred)) + "\n\n"
+
+    resultats += "[TEST] Test resultats:\n"
+    resultats += classification_report(y_test_encoded, y_test_pred, target_names=le.classes_)
+    resultats += "\n" + str(confusion_matrix(y_test_encoded, y_test_pred)) + "\n\n"
+
+    fichier_sortie = "resultats_logreg_avec_neutre.txt" if avec_neutre else "resultats_logreg_sans_neutre.txt"
+    with open(fichier_sortie, "w", encoding="utf-8") as f:
+        f.write(resultats)
+
+    print(f"\nC'est bon ! Resultats enregistrés dans {fichier_sortie}")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entraînement d'un modèle de classification de sentiments.")
     parser.add_argument("--train", type=str, required=True, help="Chemin vers le fichier CSV d'entraînement")
@@ -61,4 +79,4 @@ if __name__ == "__main__":
 
     entrainer_et_evaluer(args.train, args.dev, args.test, avec_neutre=args.avec_neutre)
 
-# exemple : python xx.py --train books_3_train.csv --dev books_3_dev.csv --test books_3_test.csv --avec-neutre
+# exemple : python logreg.py --train books_3_train.csv --dev books_3_dev.csv --test books_3_test.csv --avec-neutre
