@@ -1,0 +1,5 @@
+Modèle,Accuracy,F1 macro
+Books (2 classes),0.92,0.56
+Books (3 classes),0.86,0.43
+Kindle (2 classes),0.94,0.54
+Kindle (3 classes),0.88,0.47
