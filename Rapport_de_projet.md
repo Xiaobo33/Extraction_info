@@ -354,4 +354,24 @@ En conclusion, BERT dépasse globalement la régression logistique, mais aucun d
 
 ### 7. Conclusion (des limites et des perspectives)
 
-la pondération des classes, l'augmentation de données, ou encore l'entraînement ciblé sur les cas ambigus.
+Ce projet nous a permis de mettre en œuvre deux approches différentes pour la tâche de classification des sentiments dans les avis Amazon, en comparant deux sous-corpus (Books et Kindle), et deux types de modèles : **logistic regression** et **BERT**.
+
+En général, nous avons pu constater les tendances dans les articles scientifiques que nous avons étudiés : 
+* Les modèles classique restent efficaces pour des tâches simples de classification binaire, grâce à leur rapidité et à leur interprétabilité.
+* Les modèles de deep learning, qui est plus complexe, montrent de meilleures performances globales, notamment grâce à leur capacité à capter les nuances contextuelles du langage.
+
+Pourtant, les deux modèles rencontrent des difficultés dès lors que la classe `neutre` est introduite. Les matrices de confusion montrent qu’elle est fréquemment confondue avec la classe `positive`, ce qui révèle à la fois un déséquilibre dans les données et une frontière sémantique floue entre les catégories.
+
+Au cours de notre projet, nous avons été confrontés à plusieurs difficultés : 
+* La taille des données était trop importante pour les machines de notre époque, et il est nécessaire de les réduire.
+* Le déséquilibre entre les classes peut rendre l'entraînement moins stable, ici nous avons beaucoup moins de données pour la classe `neutre` et `négative`.
+* La limite de nos ressources matérielles, ainsi que la complexité des modèles (notamment BERT) nous restreint le nombre possible pour l'entraînement.
+
+Selon nos résultats, nous avons pensé quelques perspectives d'amélioration : 
+* La pondération des classes peut être un moyen de réduire le déséquilibre entre les classes, en augmentant la contribution des classes minoritaires comme `neutre`.
+* L'augmentation de données peut permettre d'améliorer la performance globale des modèles, mais besoin d'un ordinateur plus puissant.
+* L'utilisation des modèles plus puissants, comme RoBERTa.
+* L'évaluation humaine pour valider les prédictions et affiner les critères de la classification, mais cela est difficile à réaliser car le nombre de cas est important.
+* La gestion des cas ambigus peut être un enjeu majeur, en particulier dans le cas de la classe `neutre`.
+
+Bref, nous avons identifié plusieurs pistes d'amélioration, que nous pourrions explorer dans de futurs travaux pour renforcer la détection des sentiments les plus subtils, notamment la classe neutre.
