@@ -83,7 +83,7 @@ y_dev_pred = model.predict(X_dev_tfidf)
 print(classification_report(y_dev_encoded, y_dev_pred, target_names=le.classes_))
 print(confusion_matrix(y_dev_encoded, y_dev_pred))
 ```
-On évalue d'abord sur le jey de validation (`dev`) puis sur le jeu de test (`test`).
+On évalue d'abord sur le jeu de validation (`dev`) puis sur le jeu de test (`test`).
 
 * Enregistrement des resultats :
 ```python
