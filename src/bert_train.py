@@ -114,7 +114,6 @@ def main(train_file, dev_file, test_file, avec_neutre):
 
     # Les arguments d'entraînement
     training_args = TrainingArguments(
-        output_dir="./bert_output",
         evaluation_strategy="epoch",
         logging_strategy="epoch",   # Enregistrer les logs à chaque époque
         save_strategy="no",         # Ne sauvegarde pas les checkpoints
