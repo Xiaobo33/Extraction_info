@@ -1,23 +1,49 @@
 ## Rapport de projet : Comparaison des sentiments des commentaires sur deux corpus Amazon
-
 ### 1. **Introduction**
 
-* **Objet：** comparer la distribution des sentiments des commentaires sur Amazon Books et Amazon Kindle
-* **Méthodes：** utiliser les modèles de classification des sentiments (Logistique Regression et BERT)
-* **Données：** [Dataset Amazon Reviews sur HuggingFace ](https://amazon-reviews-2023.github.io/)
+Notre projet vise à comparer la distribution des sentiments dans les avis clients publiés sur Amazon, en se concentrant sur deux catégories de produits culturels : `Books` et `Kindle`.
+
+#### Problématique et objets du projet
+La problématique est que : 
+* Comment varie la distribution des sentiments dans les avis d'Amazon entre deux catégories de produits similaires (livres numériques et papier)?
+* La classification binaire et la classification à trois classes ont-elles un impact significatif sur les performances des modèles ?
+
+Donc le projet a trois objectifs principaux : 
+* Effectuer une analyse de sentiments univarié sur les avis clients d'Amazon en utilisant deux approches : régression logistique et BERT.
+* Comparer les résultats des approches dans deux situations différentes : avec et sans la classe `neutre`.
+* Réaliser une extraction des NER dans les deux sous-corpus (Books et Kindle) pour mieux comprendre les sentiments exprimés par les clients selon la catégorie.
+
+#### Données utilisées
+
+Les données sont issues du corpus [Amazon Reviews 2023](https://amazon-reviews-2023.github.io/), disponible sur HuggingFace. Il s'agit d'un corpus massif, avec plusieurs catégories, contenant des millions d'avis vérifiés. Nous avons extrait et nettoyé des échantillons pour les catégories `Books` et `Kindle`.
 
 ---
 
-### 2. **Prétraitement des données**
+### 2. **État de l'art**
+L'analyse de sentiments est une tâche classique en TAL, notamment aux avis clients, elle est de plus en plus important pour les entreprises. Elle vise à classifier automatiquement les opinions exprimée par les clients en positifs, négatifs ou neutres. Nous avons étudié 6 articles sur l'analyse de sentiments surtout concentrés sur les avis Amazon.
+
+Plusieurs études ont utilisé des méthodes d'apprentissage supervisé classique pour analyser les avis clients : 
+
+On constate que les modèles les plus utilisés sont les modèles de régression logistique, Naïve Bayes, SVM et l'arbre de décision. Souvant avec l'aide des techniques de vectorisation simples comme TF-IDF ou Bow.
+
+En ce qui concerne la classe neutre, la plupart des articles soulignent que l'ajout de cette classe rend la performance des modèles moins robustes. Certains auteurs donc proposent de supprimer cette classe pour améliorer la précision globale. En revanche, d'autres choisissent de la garder pour mieux refléter la diversité réelle des sentiments au prix d'une baisse du F1-score.
+
+Plus récemment, des approches de deep learning ont été développées, notamment BERT et LSTM. Ces modèles sont capables de mieux capturer des informations complexes. Dans les contextes de multilingue, mBERT permet de traiter des avis dans plusieurs langues, mais il faut faire attention au transfert entre les langues, qui reste encore un défi.
+
+L'ensemble des articles soulignent également sur l'importance du prétraitement, et quand au rôle du choix de vecteurs, TF-IDF est globalement plus performant que CountVectorizer. Pour les choix des modèles, ça dépend de différents objectif, par exemple pour un prototype rapide, un modèle simple peut suffire, mais pour produire un résultat robuste et précise, on utilise plutôt un modèle profond. Enfin l'accuacy ne suffit pas pour évaluer un modèle de sentiment, il faut considérer également le F1-score ou la matrice de confusion pour mesurer l'équilibre entre classes.
+
+En conclusion, les travaux existants nous montrent une évolution claire des approches vers des modèles de plus en plus puissants pour adapter aux défis des langues. Les méthodes classique restent utile et pertinent pour les comparaisons de base, mais pour capter les nuances, les modèles comme BERT est plus efficaces.
+
+L'état de l'art nous propose des idées pour le projet, nous choisissons donc un modèle classique et un modèle de deep learning pour comparer les performances.
+
+---
+
+### 3. **Prétraitement des données**
 
 * Taille d'échantillon choisie : comme le dataset est assez volumineux, on choisit de ne garder que les 10000 aléatoires pour éviter de surcharger le modèle et notre ordinateur.  [Echantillon.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/Echantillon.py)
 * On utilise python [clean.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/clean.py) pour nettoyer les données, et produire `clean_text`
 * Ajout des étiquettes ：`positive`, `negative`, `neutre`（garder ou pas）par [label.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/label.py)
 * On extrait les informations pertinentes pour réduire la taille des données par [extraction.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/extraction.py)
----
-
-### 3. **Conversion et division des données**
-
 * Changer le format des données de `.jsonl` à `.csv`
 * Diviser les données en `train.csv`, `dev.csv`, `test.csv` [split_dataset.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/split_dataset.py)
 
