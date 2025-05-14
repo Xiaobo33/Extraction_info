@@ -113,7 +113,101 @@ python logreg.py --train Kindle_3_train.csv  --dev Kindle_3_dev.csv --test Kindl
 ```
 
 #### BERT
+L’autre modèle que nous avons utilisé repose sur l’architecture BERT. Nous avons choisi une version allégée proposée sur Hugging Face, **DistilBERT**, qui est pré-entraîné et bien adapté à la classification de texte. Le script [bert_train.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/bert_train.py) est utilisé pour entraîner et évaluer le modèle de manière automatisée.
 
+*`load_csv_as_dataset()`*
+
+Cette fonction permet de charger les trois fichiers (train / dev / test) nettoyés, puis de les convertir en objets Dataset compatibles avec la bibliothèque Trainer de Hugging Face. 
+
+```python
+train_dataset = Dataset.from_pandas(train_df[['clean_text', 'labels']])
+```
+
+Deux étapes importantes sont intégrées à cette fonction :
+
+- D’une part, on supprime les exemples étiquetés "neutre" si l'option `--avec-neutre` n’est pas activée, afin de ne garder que deux classes.
+
+```python
+if not avec_neutre:
+    train_df = train_df[train_df['label'] != 'neutre']
+```
+
+- D’autre part, les étiquettes textuelles (positive, negative, neutre) sont encodées en entiers à l’aide de `LabelEncoder` pour que le modèle puisse les interpréter correctement au moment de l’entraînement.
+
+```python
+train_df['labels'] = label_encoder.fit_transform(train_df['label'])
+```
+
+Une fois le `Dataset` préparé, chaque texte est **tokenizé** à l’aide du tokenizer associé à DistilBERT, afin d’être transformé en une séquence d’`input_ids` et de `attention_mask`, comme requis par les modèles BERT. Cette approche peut capturer non seulement la présence des mots, mais aussi leur **contexte dans la phrase**, ce qui représente un avantage clé par rapport à la vectorisation traditionnelle.
+
+```python
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+train_dataset = train_dataset.map(tokenize, batched=True)
+train_dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
+```
+
+*`compute_metrics()`*  
+
+Pour évaluer les performances du modèle, nous avons défini cette fonction pour calculer automatiquement la **précision** et le **F1-score macro**. Ce dernier est très utile dans le cas de classes déséquilibrées. 
+
+```python
+def compute_metrics(eval_pred):
+		logits, labels = eval_pred
+		preds = np.argmax(logits, axis=1)
+```
+
+Les prédictions sont obtenues à partir des logits générés par le modèle, en appliquant la fonction `argmax`. Ces métriques sont ensuite utilisées automatiquement par l’objet `Trainer` pendant l’entraînement et l’évaluation.
+
+*`Trainer` → Entraînement*
+
+Pour entraîner le modèle, nous avons utilisé la classe `Trainer` de Hugging Face. Les paramètres d’entraînement ont été optimisés pour un bon compromis entre **qualité du résultat** et **temps de calcul** (car l’entraînement s’est fait en local sur CPU) :
+
+```python
+training_args = TrainingArguments(
+    evaluation_strategy="epoch",
+    logging_strategy="epoch",
+    save_strategy="no",
+    num_train_epochs=2,
+    max_steps=800,
+    per_device_train_batch_size=12,
+    per_device_eval_batch_size=12,
+    learning_rate=2e-5,
+    weight_decay=0.01,
+    report_to="none"
+)
+```
+
+Nous avons choisi 2 époques (au lieu de 3 initialement prévus), avec un batch size réduit, pour garantir un entraînement complet en moins de 15 minutes par modèle.
+
+À l’aide de l’objet `Trainer` , les performances du modèle sont automatiquement évaluées sur le jeu de validation (dev) à la fin de chaque époque.
+
+*`predict()` → Évaluation*
+
+Après entraînement, le modèle est évalué à la fois sur le jeu de validation pour suivre la performance à chaque époque et sur le jeu de test (test) pour générer les résultats finaux. Nous transformons ensuite ces logits en classes prédictes (`preds`) à l’aide d’un `argmax`, et les comparons aux étiquettes réelles afin d’obtenir les métriques classiques : **precision**, **recall**, **f1-score**, et la **matrice de confusion**.
+
+```python
+dev_predictions = trainer.predict(dev_dataset)
+y_dev_pred = np.argmax(dev_predictions.predictions, axis=1)
+y_dev_true = dev_dataset["labels"]
+```
+
+Les résultats sont affichés et sauvegardés dans un fichier de texte spécifique à chaque corpus (par exemple : Books_bert_sans_neutre.txt) 
+
+```python
+with open(result_file, "w", encoding="utf-8") as f:
+    f.write("[DEV] Résultats de validation :\n")
+    f.write(dev_report)
+```
+
+*`argparse`*
+
+Nos deux modèles utilisent la même méthode pour charger les jeux de données, à savoir un argument parser. Cela nous permet de spécifier facilement les fichiers d'entraînement, de validation et de test directement depuis la ligne de commande, et de relancer les expériences avec différentes configurations (avec ou sans la classe "neutre").
+
+**Exemple d'utilisation :**
+
+```bash
+python bert_train.py --train Kindle_3_train.csv  --dev Kindle_3_dev.csv --test Kindle_3_test.csv --avec-neutre
+```
 ---
 
 ### 5. **Visualisation des résultats**
