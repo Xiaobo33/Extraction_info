@@ -176,10 +176,6 @@ Et finalement, en utilisant `matplotlib`, on génère les graphiques suivants :
 
 ---
 
-
-
-
-
 #### BERT
 ---
 
