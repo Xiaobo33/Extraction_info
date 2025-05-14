@@ -55,10 +55,6 @@ L'état de l'art nous propose des idées pour le projet, nous choisissons donc u
 
 ### 4. **Modèle de classification**
 
-* On utilise `TfidfVectorizer` + `LogisticRegression` vs `Bert`
-* On supporte la commande line pour inclure ou non les neutres
-* On évalue le modèle sur `dev` et `test`
-
 #### Logistic Regression
 Pour notre premier modèle, nous avons utilisé un classifieur basé sur une combinaison de `TF-IDF` et `LogisticRegression`, qui est une méthode simple et efficace pour la classification de textes. L'ensemble du traitement est dans le script [logreg.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/logreg.py), dont voici les parties principales : 
 
@@ -340,4 +336,22 @@ Comme le présente la cinquième partie *Visualisation des résultats*, nous avo
 
 Ainsi, malgré la performance générale très satisfaisante des modèles BERT, une attention particulière doit être portée à la gestion des classes minoritaires et à l'interprétation des cas ambigus.
 
+---
+
+#### Conclusion partielle (Régression Logistique vs. BERT)
+
+1. Classification binaire
+Les deux modèles ont des performances similaires sur les corpus Books et Kindle, avec une accuracy superieure à 94%. Toutefois, leurs F1-score varient, avec la régression logistique ayant un F1 macro proche de 0.54 à 0.56, tandis que le BERT a un F1 macro proche de 0.80. Cela montre que BERT généralise mieux aux deux classes.
+
+2. Classification à trois classes
+Quand on introduit la classe neutre, la performance des deux modèles diminue, mais pas dans les mêmes proportions. L'accuracy chute à environ 87% pour la régression logistique, et à 87–89% pour BERT. Et le F1-score macro descend à 0.43–0.47 pour logreg, et reste légèrement supérieur avec BERT 0.51–0.56.
+
+Cependant, cette amélioration ne résout pas le problème principal, qui est la difficulté à distinguer la classe neutre. Cela est particulièrement visible dans les matrices de confusion, où la majorité des commentaires neutres sont mal classés.
+
+En conclusion, BERT dépasse globalement la régression logistique, mais aucun des deux modèles ne parvient à gérer efficacement la classe neutre sans ajustements spécifiques. Cela ouvre la voie à des perspectives d'amélioration.
+
+---
+
 ### 7. Conclusion (des limites et des perspectives)
+
+la pondération des classes, l'augmentation de données, ou encore l'entraînement ciblé sur les cas ambigus.
