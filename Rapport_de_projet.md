@@ -183,11 +183,34 @@ Et finalement, en utilisant `matplotlib`, on génère les graphiques suivants :
 #### BERT
 ---
 
-### 6. **Analyse des données**
+### 6. **Analyse des résultats**
 
-* comparer les données Books et Kindle
-* analyser la distribution des sentiments, les mots les plus fréquents, le modèle de classification
-* comparer les résultats de Books et Kindle
+#### Les performances de Logistic Regression
 
+Nous comparons les performances des modèles de régression logistique aux deux catégories, en tenant compte de la classe `neutre`.
 
-#### 7. Conclusion (des limites et des perspectives)
+Voici le tableau des résultats obtenus sur le jeu de test que nous avons mentionné aussi en haut :
+
+| Modèle             | Accuracy | F1 macro |
+| ------------------ | -------- | -------- |
+| Books (2 classes)  | 0.92     | 0.56     |
+| Books (3 classes)  | 0.86     | 0.43     |
+| Kindle (2 classes) | 0.94     | 0.54     |
+| Kindle (3 classes) | 0.88     | 0.47     |
+
+Grâce au tableau, on observe facilement une baisse systématique de la performance quand on passe de 2 à 3 classes. Cela est dû à la présence de la classe `neutre` dans le jeu de données, qui rend la tâche de classification plus complexe. Il nous semble que le modèle a du mal à bien différencier la classe `neutre` des autres.
+
+De plus, on peut constater que le modèle sur Kindle obtiennent une accuracy légèrement supérieure à ceux sur Books :
+
+* Kindle 2 classes : 0.94 vs 0.92
+* Kindle 3 classes : 0.88 vs 0.86
+
+Cependant, le F1 macro est légèrement meilleur pour Books des 2 classes, mais Kindle dépasse Books en 3 classes. Cela suggère que les avis Kindle sont peut-être plus variés ou plus faciles à séparer automatiquement.
+
+Donc en bref, on peut dire que le modèle de régression logistique est plus performant sur 2 classes, surtout en accuracy. Et plus les données de Kindle simple plus robuste que ceux de Books.
+
+---
+
+#### Les performances de BERT
+
+### 7. Conclusion (des limites et des perspectives)
