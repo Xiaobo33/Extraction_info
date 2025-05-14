@@ -340,4 +340,18 @@ Donc en bref, on peut dire que le modèle de régression logistique est plus per
 
 #### Les performances de BERT
 
+Les modèles BERT ont affiché dans l’ensemble de **meilleures performances** que la régression logistique, en particulier pour les versions à **deux classes** (positive / negative). Pour les corpus *Books* et *Kindle*, on observe une accuracy **supérieure à 94%** et un F1 macro **proche de 0.80**, ce qui montre une bonne capacité du modèle à capturer les relations contextuelles dans les textes.
+
+Cependant, lorsque la tâche devient une classification à **trois classes** (positive, neutre, negative), la performance globale baisse : l’accuracy descend autour de **87-89%**, et le F1-score macro tombe à **0.51–0.56**. 
+
+Après avoir comparé d’autres métriques, on trouve que cette chute peut s’expliquer par deux facteurs. D’une part, la classe neutre est sous-représentée dans les données, ce qui rend l’apprentissage plus difficile. D’autre part, la frontière sémantique entre “neutre” et “positive” est parfois floue, surtout dans des commentaires courts ou ambigus. 
+
+On constate notamment dans les fichiers de sortie que la classe neutre est très **mal prédite** par le modèle : son **recall est inférieur à 10%**, ce qui signifie qu’elle est très souvent confondue avec la classe positive. Ce phénomène est visible également dans les matrices de confusion où une majorité de commentaires neutres sont mal classés.
+
+D’un point de vue pratique, cela signifie que même si le modèle reste très performant sur les cas clairs (positifs/négatifs), il a des difficultés à détecter des nuances plus faibles. 
+
+Comme le présente la cinquième partie *Visualisation des résultats*, nous avons choisi de nous concentrer sur deux métriques représentatives pour faire une comparaison entre les deux modèles. Néanmoins, pour une analyse plus fine, la précision et le rappel par classe restent très utiles pour comprendre où le modèle se trompe, notamment en analysant les erreurs sur la classe neutre. 
+
+Ainsi, malgré la performance générale très satisfaisante des modèles BERT, une attention particulière doit être portée à la gestion des classes minoritaires et à l’interprétation des cas ambigus.
+
 ### 7. Conclusion (des limites et des perspectives)
