@@ -295,8 +295,8 @@ Voici un aperçu des résultats extraits automatiquement depuis les fichiers de 
 Nous avons choisi d’extraire uniquement **l’accuracy** et le **F1-score macro**, car ces deux métriques permettent de juger à la fois la performance globale (accuracy) et la robustesse face au déséquilibre des classes (f1-macro). D’autres métriques comme la précision ou le rappel par classe sont également présentes dans les fichiers texte, mais nous avons préféré concentrer notre analyse visuelle sur ces deux valeurs les plus représentatives.
 
 Et finalement, en utilisant `matplotlib`, on génère les graphiques suivants pour comparer clairement les performances des modèles sur l’ensemble des jeux de test : 
-* [accuracy_comparaison.png](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/accuracy_comparaison.png)
-* [f1_macro_comparaison.png](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/f1_macro_comparaison.png)
+* ![accuracy_comparaison.png](https://github.com/Xiaobo33/Extraction_info/raw/main/resultats/accuracy_comparaison.png)
+* ![f1_macro_comparaison.png](https://github.com/Xiaobo33/Extraction_info/raw/main/resultats/f1_macro_comparaison.png)
 
 Résultats enregistrés dans ces fichiers de texte :  
 * [Books_logreg_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Books_logreg_sans_neutre.txt)
@@ -314,44 +314,30 @@ Résultats enregistrés dans ces fichiers de texte :
 
 #### Les performances de Logistic Regression
 
-Nous comparons les performances des modèles de régression logistique aux deux catégories, en tenant compte de la classe `neutre`.
+Les modèles de régression logistique présentent des performances globalement correctes, surtout dans les tâches de classification binaire. Sur les corpus Books et Kindle, les modèles entraînés sans la classe neutre atteignent une accuracy de **94%**, et un F1-score macro d'environ **0.54 à 0.56**, ce qui traduit une forte capacité du modèle à reconnaître les avis positifs, mais une difficulté à détecter les avis négatifs.
 
-Voici le tableau des résultats obtenus sur le jeu de test que nous avons mentionné aussi en haut :
+Lorsque l'on introduit la classe neutre, la performance du modèle diminue visiblement. L'accuracy chute à **87%**, et le F1 macro descend jusqu'à **0.43 à 0.47**. Cela met en évidence la difficulté du modèle régression logistique à traiter des tâches multi-classes plus nuancées.
 
-| Modèle             | Accuracy | F1 macro |
-| ------------------ | -------- | -------- |
-| Books (2 classes)  | 0.92     | 0.56     |
-| Books (3 classes)  | 0.86     | 0.43     |
-| Kindle (2 classes) | 0.94     | 0.54     |
-| Kindle (3 classes) | 0.88     | 0.47     |
+En ce qui concerne l'analyse des matrices de confusion et des scores par classe permet de mieux comprendre cette baisse. Dans les deux corpus, la classe positive reste toujours très bien prédite (rappel ≥ 97%, f1-score ≥ 0.93). La classe negative bénéficie d'une amélioration par rapport à la version binaire, avec un rappel qui passe de 6–9% à 24–65%. En revanche, la classe neutre est systématiquement mal prédite : le modèle n'identifie presque aucun exemple de cette classe (aucun exemple dans le corpus de Books) avec un rappel inférieur à 10 %.
 
-Grâce au tableau, on observe facilement une baisse systématique de la performance quand on passe de 2 à 3 classes. Cela est dû à la présence de la classe `neutre` dans le jeu de données, qui rend la tâche de classification plus complexe. Il nous semble que le modèle a du mal à bien différencier la classe `neutre` des autres.
-
-De plus, on peut constater que le modèle sur Kindle obtiennent une accuracy légèrement supérieure à ceux sur Books :
-
-* Kindle 2 classes : 0.94 vs 0.92
-* Kindle 3 classes : 0.88 vs 0.86
-
-Cependant, le F1 macro est légèrement meilleur pour Books des 2 classes, mais Kindle dépasse Books en 3 classes. Cela suggère que les avis Kindle sont peut-être plus variés ou plus faciles à séparer automatiquement.
-
-Donc en bref, on peut dire que le modèle de régression logistique est plus performant sur 2 classes, surtout en accuracy. Et plus les données de Kindle simple plus robuste que ceux de Books.
+En conclusion, la régression logistique est un bon choix pour la classification binaire. Elle est capable de distinguer les avis positifs et négatifs, mais elle ne distingue pas la classe neutre. Ces résultats soulignent l'intérêt de recourir à des modèles plus puissants adaptées pour améliorer la reconnaissance des classes minoritaires.
 
 ---
 
 #### Les performances de BERT
 
-Les modèles BERT ont affiché dans l’ensemble de **meilleures performances** que la régression logistique, en particulier pour les versions à **deux classes** (positive / negative). Pour les corpus *Books* et *Kindle*, on observe une accuracy **supérieure à 94%** et un F1 macro **proche de 0.80**, ce qui montre une bonne capacité du modèle à capturer les relations contextuelles dans les textes.
+Les modèles BERT ont affiché dans l'ensemble de **meilleures performances** que la régression logistique, en particulier pour les versions à **deux classes** (positive / negative). Pour les corpus *Books* et *Kindle*, on observe une accuracy **supérieure à 94%** et un F1 macro **proche de 0.80**, ce qui montre une bonne capacité du modèle à capturer les relations contextuelles dans les textes.
 
-Cependant, lorsque la tâche devient une classification à **trois classes** (positive, neutre, negative), la performance globale baisse : l’accuracy descend autour de **87-89%**, et le F1-score macro tombe à **0.51–0.56**. 
+Cependant, lorsque la tâche devient une classification à **trois classes** (positive, neutre, negative), la performance globale baisse : l'accuracy descend autour de **87-89%**, et le F1-score macro tombe à **0.51–0.56**. 
 
-Après avoir comparé d’autres métriques, on trouve que cette chute peut s’expliquer par deux facteurs. D’une part, la classe neutre est sous-représentée dans les données, ce qui rend l’apprentissage plus difficile. D’autre part, la frontière sémantique entre “neutre” et “positive” est parfois floue, surtout dans des commentaires courts ou ambigus. 
+Après avoir comparé d'autres métriques, on trouve que cette chute peut s'expliquer par deux facteurs. D'une part, la classe neutre est sous-représentée dans les données, ce qui rend l'apprentissage plus difficile. D'autre part, la frontière sémantique entre "neutre" et "positive" est parfois floue, surtout dans des commentaires courts ou ambigus. 
 
-On constate notamment dans les fichiers de sortie que la classe neutre est très **mal prédite** par le modèle : son **recall est inférieur à 10%**, ce qui signifie qu’elle est très souvent confondue avec la classe positive. Ce phénomène est visible également dans les matrices de confusion où une majorité de commentaires neutres sont mal classés.
+On constate notamment dans les fichiers de sortie que la classe neutre est très **mal prédite** par le modèle : son **recall est inférieur à 10%**, ce qui signifie qu'elle est très souvent confondue avec la classe positive. Ce phénomène est visible également dans les matrices de confusion où une majorité de commentaires neutres sont mal classés.
 
-D’un point de vue pratique, cela signifie que même si le modèle reste très performant sur les cas clairs (positifs/négatifs), il a des difficultés à détecter des nuances plus faibles. 
+D'un point de vue pratique, cela signifie que même si le modèle reste très performant sur les cas clairs (positifs/négatifs), il a des difficultés à détecter des nuances plus faibles. 
 
 Comme le présente la cinquième partie *Visualisation des résultats*, nous avons choisi de nous concentrer sur deux métriques représentatives pour faire une comparaison entre les deux modèles. Néanmoins, pour une analyse plus fine, la précision et le rappel par classe restent très utiles pour comprendre où le modèle se trompe, notamment en analysant les erreurs sur la classe neutre. 
 
-Ainsi, malgré la performance générale très satisfaisante des modèles BERT, une attention particulière doit être portée à la gestion des classes minoritaires et à l’interprétation des cas ambigus.
+Ainsi, malgré la performance générale très satisfaisante des modèles BERT, une attention particulière doit être portée à la gestion des classes minoritaires et à l'interprétation des cas ambigus.
 
 ### 7. Conclusion (des limites et des perspectives)
