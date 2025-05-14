@@ -148,7 +148,7 @@ train_dataset.set_format("torch", columns=["input_ids", "attention_mask", "label
 
 *`compute_metrics()`*  
 
-Pour évaluer les performances du modèle, nous avons défini cette fonction pour calculer automatiquement la **précision** et le **F1-score macro**. Ce dernier est très utile dans le cas de classes déséquilibrées. 
+Pour évaluer les performances du modèle, nous avons défini cette fonction pour calculer automatiquement l'**Accuracy** et le **F1-score macro**. Ce dernier est très utile dans le cas de classes déséquilibrées. 
 
 ```python
 def compute_metrics(eval_pred):
@@ -212,10 +212,9 @@ python bert_train.py --train Kindle_3_train.csv  --dev Kindle_3_dev.csv --test K
 
 ### 5. **Visualisation des résultats**
 
-#### Logistic Regression
-Afin de comparer plus visiblement les performances des modèles entraînés, nous avons écrit un script [visualisation.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/visualisation.py) qui lit automatiquement les résultats des fichiers texte, extrait les métriques accuracy et f1-score macro, puis génère des graphiques clairs pour faciliter notre analyse.
+Afin de comparer plus visiblement les performances des modèles entraînés, nous avons écrit un script [visualisation.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/visualisation.py) qui lit automatiquement les résultats des fichiers texte, extrait les métriques **accuracy** et **f1-score macro**, puis génère des graphiques clairs pour faciliter notre analyse comparative.
 
-Voici un peu d'extrait du script :
+Voici un extrait clé du script :
 ```python
 def extraire_scores(filepath): # on définit une fonction vers le chemin de fichier
     with open(filepath, "r", encoding="utf-8") as f:
@@ -254,23 +253,35 @@ df = pd.DataFrame(resultats)
 ```
 On applique la fonction `extraire_scores` à chaque fichier de résultats, et on stocke les résultats dans une dictionnaire `resultats`. Enfin on transforme la liste en dataframe pour la visualisation.
 
-Voici un aperçu des résultats extraits automatiquement depuis les fichiers de test :
+Voici un aperçu des résultats extraits automatiquement depuis les fichiers de texte :
 
-| Modèle             | Accuracy | F1 macro |
-| ------------------ | -------- | -------- |
-| Books (2 classes)  | 0.92     | 0.56     |
-| Books (3 classes)  | 0.86     | 0.43     |
-| Kindle (2 classes) | 0.94     | 0.54     |
-| Kindle (3 classes) | 0.88     | 0.47     |
+| Modèle                | Accuracy | F1 macro |
+|-----------------------|----------|----------|
+| Books (2) - LogReg    | 0.92     | 0.56     |
+| Books (2) - BERT      | 0.94     | 0.80     |
+| Books (3) - LogReg    | 0.86     | 0.43     |
+| Books (3) - BERT      | 0.87     | 0.51     |
+| Kindle (2) - LogReg   | 0.94     | 0.54     |
+| Kindle (2) - BERT     | 0.95     | 0.79     |
+| Kindle (3) - LogReg   | 0.88     | 0.47     |
+| Kindle (3) - BERT     | 0.89     | 0.56     |
 
-Et finalement, en utilisant `matplotlib`, on génère les graphiques suivants :
+Nous avons choisi d’extraire uniquement **l’accuracy** et le **F1-score macro**, car ces deux métriques permettent de juger à la fois la performance globale (accuracy) et la robustesse face au déséquilibre des classes (f1-macro). D’autres métriques comme la précision ou le rappel par classe sont également présentes dans les fichiers texte, mais nous avons préféré concentrer notre analyse visuelle sur ces deux valeurs les plus représentatives.
 
-* [LR_accuracy_test.png](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/LR_accuracy_test.png)
-* [LR_f1_macro_test.png](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/LR_f1_macro_test.png)
+Et finalement, en utilisant `matplotlib`, on génère les graphiques suivants pour comparer clairement les performances des modèles sur l’ensemble des jeux de test : 
+* [accuracy_comparaison.png](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/accuracy_comparaison.png)
+* [f1_macro_comparaison.png](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/f1_macro_comparaison.png)
 
----
+Résultats enregistrés dans ces fichiers de texte :  
+* [Books_logreg_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Books_logreg_sans_neutre.txt)
+* [Books_logreg_avec_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Books_logreg_avec_neutre.txt)
+* [Kindle_logreg_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Kindle_logreg_sans_neutre.txt)
+* [Kindle_logreg_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Kindle_logreg_sans_neutre.txt)
+* [Books_bert_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Books_logreg_sans_neutre.txt)
+* [Books_bert_avec_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Books_logreg_avec_neutre.txt)
+* [Kindle_bert_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Kindle_logreg_sans_neutre.txt)
+* [Kindle_bert_sans_neutre.txt](https://github.com/Xiaobo33/Extraction_info/blob/main/resultats/Kindle_logreg_sans_neutre.txt)
 
-#### BERT
 ---
 
 ### 6. **Analyse des résultats**
