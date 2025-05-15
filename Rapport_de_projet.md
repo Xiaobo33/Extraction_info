@@ -234,6 +234,7 @@ python bert_train.py --train Kindle_3_train.csv  --dev Kindle_3_dev.csv --test K
 
 ### 5. **Visualisation des résultats**
 
+#### Analyse quantitative
 Afin de comparer plus visiblement les performances des modèles entraînés, nous avons écrit un script [visualisation.py](https://github.com/Xiaobo33/Extraction_info/blob/main/src/visualisation.py) qui lit automatiquement les résultats des fichiers texte, extrait les métriques **accuracy** et **f1-score macro**, puis génère des graphiques clairs pour faciliter notre analyse comparative.
 
 Voici un extrait clé du script :
@@ -306,6 +307,24 @@ Résultats enregistrés dans ces fichiers de texte :
 
 ---
 
+#### Analyse lexicale
+Afin de compléter l'analyse quantitative basée sur les scores de classification, nous avons généré des **nuages de mots** à partir des **avis positifs** issus des corpus *Books* et *Kindle*. Dans les deux cas, les mots dominants sont book, read, story, character, love, ce qui témoigne d’une expérience de lecture immersive et émotionnelle largement partagée par les utilisateurs.
+
+* ![books_wordcloud.png](https://github.com/Xiaobo33/Extraction_info/raw/main/resultats/books_wordcloud.png)
+
+* ![kindle_wordcloud.png](https://github.com/Xiaobo33/Extraction_info/raw/main/resultats/kindle_wordcloud.png)
+
+On note cependant que le corpus Kindle fait légèrement ressortir des expressions à tonalité plus fonctionnelle, telles que “*reader”*, “*next book”*, “*can’t wait”*, “*look forward”*, ce qui pourrait refléter une approche plus utilitaire ou séquentielle des **lectures numériques**.
+
+En fait, malgré l'utilisation de deux sous-corpus distincts, les nuages de mots présentent une **forte similarité lexicale**. Ce phénomène s'explique par deux facteurs principales : 
+
+- Les commentaires positifs, qu’ils portent sur un livre papier ou numérique, se concentrent souvent sur les mêmes éléments d’appréciation comme qualité de l’histoire, attachement aux personnages, style de l’auteur, etc.
+- Les utilisateurs d’Amazon tendent à adopter un **style d’évaluation très homogène**, souvent court, enthousiaste, et centré sur la recommandation, avec des formules récurrentes telles que “loved it”, “highly recommend”, “couldn’t put it down”.
+
+Cette observation suggère que, dans le cas de la classification de sentiments, **le type de support** (papier ou numérique) n’influence pas de manière significative le langage employé dans les évaluations favorables.
+
+---
+
 ### 6. **Analyse des résultats**
 
 #### Les performances de Logistic Regression
@@ -351,6 +370,7 @@ Cependant, cette amélioration ne résout pas le problème principal, qui est la
 En conclusion, BERT dépasse globalement la régression logistique, mais aucun des deux modèles ne parvient à gérer efficacement la classe neutre sans ajustements spécifiques. Cela ouvre la voie à des perspectives d'amélioration.
 
 ---
+
 
 ### 7. Conclusion (des limites et des perspectives)
 
